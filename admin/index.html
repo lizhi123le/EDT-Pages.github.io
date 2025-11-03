@@ -2489,16 +2489,16 @@ function translateLogType(type, ua = '') {
     if (type === 'Get_SUB') {
         const uaLowercase = (ua || '').toLowerCase();
         if (uaLowercase.includes('subconverter')) {
-            return { text: '订阅转换后端', color: '#3b82f6' };
+            return { text: '订阅转换', color: '#3b82f6' };
         }
-        return { text: '获取节点订阅', color: '#10b981' };
+        return { text: '获取订阅', color: '#10b981' };
     }
     
     const typeMap = {
-        'Admin_Login': { text: '登录管理员后台', color: '#f59e0b' },
-        'Save_Config': { text: '保存配置信息', color: '#8b5cf6' },
-        'Init_Config': { text: '重置配置信息', color: '#ef4444' },
-        'Save_Custom_IPs': { text: '保存自定义IP', color: '#06b6d4' }
+        'Admin_Login': { text: '登录后台', color: '#f59e0b' },
+        'Save_Config': { text: '保存配置', color: '#8b5cf6' },
+        'Init_Config': { text: '重置配置', color: '#ef4444' },
+        'Save_Custom_IPs': { text: '自定义优选', color: '#06b6d4' }
     };
     return typeMap[type] || { text: type, color: '#6b7280' };
 }
@@ -2527,7 +2527,7 @@ function loadLogsOnExpand(titleEl) {
     }
 }
 
-// 加载最近6条日志
+// 加载最近8条日志
 async function loadLogs() {
     try {
         const response = await fetch('/admin/log.json?t=' + Date.now());
@@ -2544,8 +2544,17 @@ async function loadLogs() {
             return;
         }
         
+        // 检查是否为移动设备
+        const isMobile = window.innerWidth <= 768;
+        
         let html = '<table style="width: 100%; border-collapse: collapse;">';
-        html += '<thead><tr style="border-bottom: 2px solid #e5e7eb;"><th style="text-align: left; padding: 10px; font-weight: 600;">时间 (UTC+8)</th><th style="text-align: left; padding: 10px; font-weight: 600;">IP</th><th style="text-align: left; padding: 10px; font-weight: 600;">地区</th><th style="text-align: left; padding: 10px; font-weight: 600;">操作</th></tr></thead>';
+        if (isMobile) {
+            // 移动设备：显示时间、IP、操作
+            html += '<thead><tr style="border-bottom: 2px solid #e5e7eb;"><th style="text-align: left; padding: 10px; font-weight: 600;">时间 (UTC+8)</th><th style="text-align: left; padding: 10px; font-weight: 600;">IP</th><th style="text-align: left; padding: 10px; font-weight: 600;">操作</th></tr></thead>';
+        } else {
+            // 桌面设备：显示时间、IP、地区、操作
+            html += '<thead><tr style="border-bottom: 2px solid #e5e7eb;"><th style="text-align: left; padding: 10px; font-weight: 600;">时间 (UTC+8)</th><th style="text-align: left; padding: 10px; font-weight: 600;">IP</th><th style="text-align: left; padding: 10px; font-weight: 600;">地区</th><th style="text-align: left; padding: 10px; font-weight: 600;">操作</th></tr></thead>';
+        }
         html += '<tbody>';
         
         recentLogs.forEach(log => {
@@ -2554,7 +2563,13 @@ async function loadLogs() {
             const timeStr = formatTime(log.TIME);
             const ip = log.IP || '未知';
             
-            html += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="padding: 10px;">${timeStr}</td><td style="padding: 10px; font-family: monospace; font-size: 12px;">${ip}</td><td style="padding: 10px;">${cc}</td><td style="padding: 10px;"><span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; color: #fff; background-color: ${logType.color};">${logType.text}</span></td></tr>`;
+            if (isMobile) {
+                // 移动设备：不显示地区
+                html += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="padding: 10px; font-size: 12px;">${timeStr}</td><td style="padding: 10px; font-family: monospace; font-size: 12px;">${ip}</td><td style="padding: 10px;"><span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; color: #fff; background-color: ${logType.color};">${logType.text}</span></td></tr>`;
+            } else {
+                // 桌面设备：显示地区
+                html += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="padding: 10px;">${timeStr}</td><td style="padding: 10px; font-family: monospace; font-size: 12px;">${ip}</td><td style="padding: 10px;">${cc}</td><td style="padding: 10px;"><span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; color: #fff; background-color: ${logType.color};">${logType.text}</span></td></tr>`;
+            }
         });
         
         html += '</tbody></table>';
@@ -2589,7 +2604,7 @@ async function showAllLogs() {
             const url = log.URL || '无';
             const ua = log.UA ? log.UA.substring(0, 60) : '无';
             
-            html += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="padding: 8px; white-space: nowrap; width: 160px; font-size: 11px;">${timeStr}</td><td style="padding: 8px; font-family: monospace; font-size: 10px; white-space: nowrap; width: 120px; word-break: break-word;">${ip}</td><td style="padding: 8px; white-space: nowrap; width: 80px; font-size: 11px;">${cc}</td><td style="padding: 8px; white-space: nowrap; width: 80px; font-size: 11px; font-family: monospace;">${asn}</td><td style="padding: 8px; width: 150px;"><span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #fff; background-color: ${logType.color}; white-space: nowrap;">${logType.text}</span></td><td style="padding: 8px; font-size: 11px; word-break: break-word; min-width: 300px;">${url}</td><td style="padding: 8px; font-size: 10px; color: #6b7280; min-width: 200px; word-break: break-word;">${ua}</td></tr>`;
+            html += `<tr style="border-bottom: 1px solid #f3f4f6;"><td style="text-align: left; padding: 8px; white-space: nowrap; width: 160px; font-size: 11px;">${timeStr}</td><td style="text-align: left; padding: 8px; font-family: monospace; font-size: 10px; white-space: nowrap; width: 120px; word-break: break-word;">${ip}</td><td style="text-align: left; padding: 8px; white-space: nowrap; width: 80px; font-size: 11px;">${cc}</td><td style="text-align: left; padding: 8px; white-space: nowrap; width: 80px; font-size: 11px; font-family: monospace;">${asn}</td><td style="text-align: left; padding: 8px; width: 150px;"><span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #fff; background-color: ${logType.color}; white-space: nowrap;">${logType.text}</span></td><td style="text-align: left; padding: 8px; font-size: 11px; word-break: break-word; min-width: 300px;">${url}</td><td style="text-align: left; padding: 8px; font-size: 10px; color: #6b7280; min-width: 200px; word-break: break-word;">${ua}</td></tr>`;
         });
         
         html += '</tbody></table>';
