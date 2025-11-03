@@ -1692,6 +1692,8 @@ async function loadConfig() {
         currentConfig = await response.json();
         originalConfig = JSON.parse(JSON.stringify(currentConfig));
         renderUI();
+        // 设置网页标题
+        document.title = `${currentConfig.优选订阅生成?.SUBNAME || 'edgetunnel'}设置页面 - 管理后台`;
     } catch (error) {
         showToast('加载配置失败: ' + error.message, 'error');
     }
@@ -1997,6 +1999,8 @@ async function saveConfig() {
     currentConfig.跳过证书验证 = document.getElementById('skipVerify').checked;
     
     await saveConfigToServer('config');
+    // 更新网页标题
+    document.title = `${currentConfig.优选订阅生成?.SUBNAME || 'edgetunnel'}设置页面 - 管理后台`;
 }
 
 async function saveProxy() {
