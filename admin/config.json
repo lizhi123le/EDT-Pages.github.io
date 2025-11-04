@@ -46,9 +46,9 @@
     "APIToken": "duN***********************************fs",
     "Usage": {
       "success": true,
-      "pages": 24900,
-      "workers": 50000,
-      "total": 74900
+      "pages": 10900,
+      "workers": 9670,
+      "total": 20510
     }
   },
   "PATH": "/",
