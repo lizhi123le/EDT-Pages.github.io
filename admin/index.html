@@ -1846,24 +1846,24 @@
 
         /* 简单模式 - 隐藏高级模块 */
         .advanced-module {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 10000px;
-            opacity: 1;
-            overflow: hidden;
-            transform: scaleY(1);
+            transition: opacity 0.4s ease-in-out, max-height 0.5s ease-in-out, transform 0.4s ease-in-out, margin 0.5s ease-in-out, padding 0.5s ease-in-out, border-width 0.5s ease-in-out;
             transform-origin: top;
+            overflow: hidden;
+            max-height: 1000px; /* 设定一个足够大的最大高度 */
+            transform: scaleY(1);
+            opacity: 1;
         }
 
         .simple-mode .advanced-module {
-            max-height: 0 !important;
-            opacity: 0 !important;
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            border: none !important;
-            pointer-events: none;
+            opacity: 0;
+            max-height: 0;
             transform: scaleY(0.95);
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-width: 0;
+            pointer-events: none;
         }
 
         /* Cloudflare 配置部分样式 */
